@@ -5,15 +5,15 @@
 TEXT_HEADER_MENU_ADDR		EQU #2755
 
 ; Список меню
-ITEMS_MENU_ADDR				EQU #2744
+ITEMS_MENU_ADDR			EQU #2744
 TEXT_ITEMS_MENU_ADDR		EQU #275E
 
 ; Адреса обработчиков списка меню
-TR_DOS_HANDLER				EQU #2816
-TAPE_LOADER_HANDLER			EQU #2831
-BASIC_128_HANDLER			EQU #286C
-CALCULATOR_HANDLER			EQU #2885
-BASIC_48_HANDLER	 		EQU #1B47
+TR_DOS_HANDLER			EQU #2816
+TAPE_LOADER_HANDLER		EQU #2831
+BASIC_128_HANDLER		EQU #286C
+CALCULATOR_HANDLER		EQU #2885
+BASIC_48_HANDLER	 	EQU #1B47
 
 ; Банеры с косыми полосками 
 ; Адреса c текстом банеров
@@ -33,7 +33,7 @@ CALCULATOR_BANNER_ROUTINE_ADDR	EQU #384d
 
 				DEVICE  	ZXSPECTRUM48
 
-				;Кастомизация ---------------------------
+				;Кастомизация ----------------------------------------------
 				; Цвет полоски селектора меню
 				ORG	ROM_PAGE_128k_ADDR + #37E0
 				DB	MENU_ATTR			
@@ -65,7 +65,7 @@ CALCULATOR_BANNER_ROUTINE_ADDR	EQU #384d
 				DB	MENU_HEAD_POS+7		
 
 
-				; Напись в шапке меню ---------------------------------
+				; Напись в шапке меню --------------------------------------
 				ORG	ROM_PAGE_128k_ADDR + TEXT_HEADER_MENU_ADDR
 				;	"        " ; Внимание !!! 8 символов	
 				
@@ -76,54 +76,54 @@ CALCULATOR_BANNER_ROUTINE_ADDR	EQU #384d
 					DB	"Pent128 " ; Внимание !!! 8 символов
 				ENDIF
 
-				; Пункты меню  указатели обработчиков -----------------
+
+
+				; Указатели обработчиков для пунктов меню ------------------
 				ORG	ROM_PAGE_128k_ADDR + ITEMS_MENU_ADDR
-				DB	5					; Количество пунтов меню
+				; Количество строк меню
+				DB	5
 
-				DB	0					; Пункт меню  
-				DW	TR_DOS_HANDLER		; Адрес вызова
+				; Адреса процедур обработчиков вызываемых пунктами меню
+				DB	0
+				DW	TR_DOS_HANDLER
+				DB	1
+				DW	TAPE_LOADER_HANDLER
+				DB	2
+				DW	BASIC_128_HANDLER
+				DB	3
+				DW	CALCULATOR_HANDLER
+				DB	4
+				DW	BASIC_48_HANDLER
 
-				DB	1					; Пункт меню
-				DW	TAPE_LOADER_HANDLER	; Адрес обработчика
-
-				DB	2					; Пункт меню
-				DW	BASIC_128_HANDLER	; Адрес обработчика 
-
-				DB	3					; Пункт меню
-				DW	CALCULATOR_HANDLER	; Адрес обработчика
-
-				DB	4					; Пункт меню
-				DW	BASIC_48_HANDLER	; Адрес обработчика
-
-
-
-				; Текст меню ----------------------------------------
-				ORG		ROM_PAGE_128k_ADDR + TEXT_ITEMS_MENU_ADDR 
-				DC	 "TR-DOS"
+				; Текст пунктов в меню -------------------------------------
+				ORG	ROM_PAGE_128k_ADDR + TEXT_ITEMS_MENU_ADDR 
+				DC	"TR-DOS"
 				DC	"Tape Loader"
 				DC	"128 Basic"
 				DC	"Calculator"
 				DC	"48 Basic"
 
 
-				; Банеры --------------------------------------------  
-				; Tape Loader
-				ORG		ROM_PAGE_128k_ADDR + TAPE_LOADER_BANNER_ROUTINE_ADDR + 1
-				DW 		TAPE_LOADER_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
 
-				; Basic 128
-				ORG		ROM_PAGE_128k_ADDR + BASIC_128_BANNER_ROUTINE_ADDR + 1	
-				DW 		BASIC_128_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
+				; Банеры (Такие черные с цветными полосками на весь экран)--
 
-				; Calculator
-				ORG		ROM_PAGE_128k_ADDR + CALCULATOR_BANNER_ROUTINE_ADDR + 1
-				DW 		CALCULATOR_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
+				; Tape Loader          / / / / 
+				ORG	ROM_PAGE_128k_ADDR + TAPE_LOADER_BANNER_ROUTINE_ADDR + 1
+				DW 	TAPE_LOADER_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
+
+				; Basic 128           / / / / 
+				ORG	ROM_PAGE_128k_ADDR + BASIC_128_BANNER_ROUTINE_ADDR + 1	
+				DW 	BASIC_128_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
+
+				; Calculator          / / / / 
+				ORG	ROM_PAGE_128k_ADDR + CALCULATOR_BANNER_ROUTINE_ADDR + 1
+				DW 	CALCULATOR_BANNER_ADDR + SHIFT_FOR_BANNER_ADDR
 
 
-				; Текст внизу экрана
-				ORG		ROM_PAGE_128k_ADDR+#0561
-				; DB    COPYRIGHT_SYMBOL					; Знак копирайта
-				; DC     " 1986 Sinclair Research Ltd"		; Старая надпись
+				; Текст внизу экрана ---------------------------------------
+				ORG	ROM_PAGE_128k_ADDR+#0561
+				; DB    COPYRIGHT_SYMBOL		; Знак копирайта
+				; DC    " 1986 Sinclair Research Ltd"	; Старая надпись
 
 				;               Экран ZX-SPECTRUM
 				;        01234567890123456789012345678901
@@ -152,8 +152,8 @@ CALCULATOR_BANNER_ROUTINE_ADDR	EQU #384d
 				;   22  |                                |
 
 				IFDEF   PENTAGON_1024
-				DC	    "   1991-2024 Pentagon 1024k ";  | Ограничение строки в 28 байт !
+				DC	"   1991-2024 Pentagon 1024k ";  | Ограничение строки в 28 байт !
 				ELSE
-				DC	    "   1991 ATM128/Pentagon-128K";  | Ограничение строки в 28 байт !
+				DC	"   1991 ATM128/Pentagon-128K";  | Ограничение строки в 28 байт !
 				ENDIF
-				;	    |================================|
+				;	|================================|
